@@ -11,10 +11,13 @@ import { IProduct } from 'src/app/Shared/Types/product-type';
 export class ProductListComponent implements OnInit {
 products:IProduct[];
 selectedProduct:IProduct;
-  constructor(private productDataService:ProductDataService, private router:Router) { }
+  constructor(private productDataService:ProductDataService, private router:Router) {
+    console.log('product list constructor');
+   }
 
   ngOnInit(): void {
     this.products = this.productDataService.getList();
+    this.productDataService.selectedProductChanges$.subscribe((data)=>this.onSelectedProductRetrieveFromLocalStorage(data));
   }
   edit(){
     if(!this.selectedProduct){
@@ -22,7 +25,18 @@ selectedProduct:IProduct;
       return;
     }
     this.router.navigate(['productedit', this.selectedProduct.id]);
-    console.log(this.selectedProduct);
+    // console.log(this.selectedProduct);
   }
-
+  onSelectedProductRetrieveFromLocalStorage(data:IProduct){
+    this.selectedProduct = data;
+    console.log(' onSelectedProductRetrieveFromLocalStorage ');
+  }
+  onRowSelect(data):void{
+    // console.log(data);
+    this.productDataService.changeSelectedProduct(data.data);
+  }
+  onRowUnselect(data):void{
+    // console.log(data);
+    this.productDataService.changeSelectedProduct(null);
+  }
 }

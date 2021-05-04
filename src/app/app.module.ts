@@ -6,6 +6,8 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 import { AppComponent } from './app.component';
 import { ProductModule } from './product/product.module';
+import { EmpModule } from './emp/emp.module';
+import { StoreModule } from '@ngrx/store';
 
 
 @NgModule({
@@ -17,7 +19,9 @@ import { ProductModule } from './product/product.module';
     BrowserAnimationsModule,
     
     AppRoutingModule,
-    ProductModule
+    ProductModule,
+    EmpModule,
+    StoreModule.forRoot({}, {})
     
     
   ],
