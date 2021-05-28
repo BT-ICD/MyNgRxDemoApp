@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { IEmp } from 'src/app/Shared/Types/emp-type';
+import { EmpState, getCurrentEmp } from '../state/emp.reducer';
 
 @Component({
   selector: 'app-emp-edit',
@@ -8,10 +12,28 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 })
 export class EmpEditComponent implements OnInit {
   empForm:FormGroup;
-  constructor(private fb:FormBuilder) { console.log('Emp Edit constructor');}
+  currentEmp:IEmp
+  constructor(private fb:FormBuilder, private store:Store<EmpState>, private router:Router) {}
 
   ngOnInit(): void {
-    this.initializeForm();
+    
+  
+      this.initializeForm();
+ 
+    this.store.select(getCurrentEmp).subscribe((data)=> 
+        {
+          this.currentEmp = data
+          console.log(this.currentEmp);
+          //Set Values to the Form Control
+          if(this.currentEmp){
+          this.empForm.setValue({
+            id:this.currentEmp?.id,
+            name:this.currentEmp?.name,
+            designation:this.currentEmp?.designation
+          });
+        }
+        }
+    );
   }
   initializeForm():void{
     this.empForm = this.fb.group({
@@ -21,7 +43,7 @@ export class EmpEditComponent implements OnInit {
     })
   }
   onSubmit():void{
-    console.log('Emp Form submitted')
-    console.log(this.empForm.value);
+    this.router.navigate(['/emp']);
+
   }
 }
