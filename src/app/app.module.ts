@@ -8,6 +8,8 @@ import { AppComponent } from './app.component';
 import { ProductModule } from './product/product.module';
 import { EmpModule } from './emp/emp.module';
 import { StoreModule } from '@ngrx/store';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { environment } from '../environments/environment';
 
 
 @NgModule({
@@ -21,7 +23,8 @@ import { StoreModule } from '@ngrx/store';
     AppRoutingModule,
     ProductModule,
     EmpModule,
-    StoreModule.forRoot({}, {})
+    StoreModule.forRoot({}, {}),
+    StoreDevtoolsModule.instrument({ name:'MyNgRxDemoApp', maxAge: 25, logOnly: environment.production })
     
     
   ],

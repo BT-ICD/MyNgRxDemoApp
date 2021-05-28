@@ -3,13 +3,12 @@
  * Angular Component Communication - by Deborah Kurata
  * https://app.pluralsight.com/library/courses/angular-component-communication/table-of-contents
  */
-import { Statement } from '@angular/compiler';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { EmpDataService } from 'src/app/Shared/Services/emp-data.service';
 import { IEmp } from 'src/app/Shared/Types/emp-type';
-import {    clearCurrentEmp, setCurrentEmp, State } from '../state/emp.reducer';
+import {    clearCurrentEmp, setCurrentEmp, EmpState, getCurrentEmp } from '../state/emp.reducer';
 
 @Component({
   selector: 'app-emp-list',
@@ -19,32 +18,26 @@ import {    clearCurrentEmp, setCurrentEmp, State } from '../state/emp.reducer';
 export class EmpListComponent implements OnInit {
 empList:IEmp[];
 selectedEmp:IEmp;
-  constructor(private empDataService:EmpDataService, private store:Store<State>, private router:Router ) {
+  constructor(private empDataService:EmpDataService, private store:Store<EmpState>, private router:Router ) {
     console.log('Emplist constructor');
    }
 
   ngOnInit(): void {
     console.log('Emplist Oninit' );
-    // this.store.select('emps').subscribe((data):IEmpState=>{
-    //   console.log( 'Data received using select method '+JSON.stringify(data));
-    //   this.selectedEmp = data
-    // })
-    // this.store.select('emp').subscribe((data)=>{
-
-    // })
-    this.store.select('emps').subscribe((data)=>{
-      console.log('initial selector ');
-      this.selectedEmp = data
-      console.log(data);
+    this.empList= this.empDataService.getList();
+    this.store.select(getCurrentEmp).subscribe((data)=>{
+      this.selectedEmp = data;
     })
     
-    this.empList= this.empDataService.getList();
   }
   
-  onRowSelect(data:IEmp):void{
-    this.selectedEmp = data
+  onRowSelect(data):void{
+    this.selectedEmp = data.data;
+    console.log(data.data);
+    let empData1:IEmp = {id:data.data.id, name:data.data.name, designation:data.data.designation}; 
+  
     //To disptch action
-    this.store.dispatch(setCurrentEmp({empData:this.selectedEmp}) );
+    this.store.dispatch(setCurrentEmp({empData:empData1}) );
 
   }
   onRowUnselect(data:IEmp):void{
